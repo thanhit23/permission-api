@@ -9,9 +9,9 @@ class UserRepository {
   static async register(body: RegisterBody): Promise<any> {
     try {
       return new Promise((resolve, reject) => {
-        const queryCheckEmail = `SELECT * FROM Users WHERE email = "${body.email}"`;
+        const queryCheckEmail = `SELECT * FROM Users WHERE email = ?`;
 
-        db.query(queryCheckEmail, (err: QueryError, results: User[]) => {
+        db.query(queryCheckEmail, [body.email], (err, results: any) => {
           if (err) {
             return reject({ status: false, statusCode: httpStatus.BAD_REQUEST, error: true });
           }
@@ -22,8 +22,9 @@ class UserRepository {
         });
 
         const password = bcrypt.hashSync(body.password, 10);
+        const queryInsertUser = 'INSERT INTO Users (name, email, password) VALUES (?, ?, ?)';
 
-        db.query(`INSERT INTO Users (name, email, password) VALUES ('${body.name}', '${body.email}', '${password}')`, (err: QueryError) => {
+        db.query(queryInsertUser, [body.name, body.email, password], (err: QueryError | null) => {
           if (err) {
             return reject({ status: false, statusCode: httpStatus.BAD_REQUEST, error: true });
           }
@@ -39,9 +40,7 @@ class UserRepository {
   static async login(body: LoginBody): Promise<any> {
     try {
       return new Promise((resolve, reject) => {
-        const queryCheckEmail = `SELECT * FROM Users WHERE email = "${body.email}" LIMIT 1`;
-
-        db.query(queryCheckEmail, (err: QueryError, results: User[]) => {
+        db.query('SELECT * FROM Users WHERE email = ? LIMIT 1', [body.email], (err: QueryError | null, results: any) => {
           if (err) {
             return reject({ status: false, statusCode: httpStatus.BAD_REQUEST, error: true });
           }

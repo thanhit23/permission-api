@@ -1,4 +1,5 @@
-import mysql from 'mysql2';
+import mysql, { QueryError, FieldPacket } from 'mysql2';
+
 
 const connection = mysql.createConnection({
     host: '127.0.0.1',
@@ -7,7 +8,7 @@ const connection = mysql.createConnection({
     database: 'RBAC'
 });
 
-connection.connect(err => {
+connection.connect((err: QueryError | null) => {
     if (err) {
         console.error('Error connection MySQL:', err);
         return;

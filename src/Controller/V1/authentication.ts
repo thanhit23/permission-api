@@ -4,8 +4,14 @@ import AuthenticationService from '@/Service/authentication'
 
 class AuthenticationController {
   static async register(req: Request, res: Response): Promise<void> {
-    await AuthenticationService.register(req, res);
-
+    try {
+      const responsive = await AuthenticationService.register(req.body);
+      res.status(responsive?.statusCode).json(responsive);
+    } catch (err) {
+      const error = { statusCode: 500, ...(err instanceof Object ? err : {}) };
+      res.status(error?.statusCode).json(error);
+      return;
+    }
   }
   static async login(req: Request, res: Response): Promise<void> {
     await AuthenticationService.login(req, res);

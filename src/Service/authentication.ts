@@ -4,19 +4,12 @@ import { Request, Response } from 'express';
 
 import config from '@/config/config';
 import { TokenTypes } from '@/config/tokens';
-import User, { RegisterBody } from '@/Model/User';
+import User, { RegisterBody, Resposive } from '@/Model/User';
 import AuthenticationRepository from "@/Repository/authentication";
 
 class AuthenticationService {
-  static async register(req: Request<any, any, RegisterBody>, res: Response): Promise<void> {
-    try {
-      const responsive = await AuthenticationRepository.register(req.body);
-      res.status(responsive?.statusCode).json(responsive);
-    } catch (err) {
-      const error = { statusCode: 500, ...(err instanceof Object ? err : {}) };
-      res.status(error?.statusCode).json(error);
-      return;
-    }
+  static async register(body: RegisterBody): Promise<Resposive> {
+    return await AuthenticationRepository.register(body);
   }
   static async generateAuthTokens(user: User) {
     const accessTokenExpires = dayjs().add(config.jwt.accessExpirationMinutes, 'minutes');
