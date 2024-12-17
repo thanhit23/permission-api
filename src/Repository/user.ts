@@ -1,24 +1,10 @@
-import { Request, Response } from 'express';
-import { QueryError } from 'mysql2';
-
-import db from '@/database'
-import { User } from '@/Model/User'
+import DB from '@/database'
+import Users from '@/model/Users'
 
 class UserRepository {
-  static async getUsers(): Promise<User[]> {
-    try {
-      return new Promise<User[]>((resolve, reject) => {
-        db.query('SELECT * FROM Users', (err: QueryError, results: User[]) => {
-          if (err) {
-            return reject(err);
-          }
-          resolve(results);
-        });
-      });
-    } catch (error) {
-      console.error('Error fetching users by class:', error);
-      return [];
-    }
+  static async getUsers(): Promise<Users[]> {
+    const users = await DB.getEntityManager().find(Users, {});
+    return users;
   }
 }
 

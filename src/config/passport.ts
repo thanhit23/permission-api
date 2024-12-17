@@ -1,9 +1,8 @@
 import { Strategy as JwtStrategy, ExtractJwt, VerifyCallback } from 'passport-jwt';
 
-import db from '@/database';
+import DB from '@/database';
 import { TokenTypes } from './tokens';
-import { QueryError } from 'mysql2';
-import User from '@/Model/User';
+import Users from '@/model/Users';
 
 const jwtOptions = {
   secretOrKey: 'SECRET',
@@ -16,22 +15,13 @@ const jwtVerify: VerifyCallback = async (payload, done) => {
       throw new Error('Invalid token type');
     }
 
-    const query = `SELECT * FROM Users WHERE id = ${payload.sub} LIMIT 1`;
+    const users = await DB.getEntityManager().find(Users, { id: payload.sub })
 
-    return new Promise((resolve, reject) => {
-      db.query(query, (err: QueryError, results: User[]) => {
-        
-        if (err) {
-          done(null, false);
-          reject();
-        }
-  
-        if (results.length >= 1) {
-          done(null, results[0]);
-          resolve()
-        }
-      });
-    })
+    if (users.length === 0) {
+      done(null, false);
+    }
+
+    done(null, users[0]);
   } catch (error) {
     done(error, false);
   }

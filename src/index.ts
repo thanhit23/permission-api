@@ -3,11 +3,12 @@ import bodyParser from "body-parser";
 import cors from 'cors';
 import passport from 'passport';
 import helmet from 'helmet';
-import express, { Express, Request, Response, NextFunction } from "express";
+import express, { Express, Request, Response } from "express";
 
-import userRoutes from '@/Router/user';
-import authenticationrRoutes from '@/Router/authentication';
+import userRoutes from '@/router/user';
+import authenticationrRoutes from '@/router/authentication';
 import jwtStrategy from "@/config/passport";
+import { Database } from "./database";
 
 dotenv.config();
 
@@ -33,7 +34,9 @@ app.options('*', cors());
 app.use('/v1', userRoutes);
 app.use('/v1/auth', authenticationrRoutes);
 
-app.use((err: { status?: number; message: string}, req: Request, res: Response, next: NextFunction) => {
+Database.initialize();
+
+app.use((err: { status?: number; message: string}, _: Request, res: Response) => {
   res.status(err.status || 500).json({
     error: {
       message: err.message || 'Internal Server Error',

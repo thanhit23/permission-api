@@ -1,19 +1,22 @@
-import mysql, { QueryError, FieldPacket } from 'mysql2';
+import { MikroORM } from '@mikro-orm/core';
 
+import config from '@/mikro-orm.config';
 
-const connection = mysql.createConnection({
-    host: '127.0.0.1',
-    user: 'root',
-    password: '',
-    database: 'RBAC'
-});
+export class Database {
+  private static orm: MikroORM;
 
-connection.connect((err: QueryError | null) => {
-    if (err) {
-        console.error('Error connection MySQL:', err);
-        return;
+  static async initialize() {
+    if (!this.orm) {
+      this.orm = await MikroORM.init(config);
     }
-    console.log('Connection MySQL success!');
-});
+  }
 
-export default connection;
+  static getEntityManager() {
+    if (!this.orm) {
+      throw new Error('Database not initialized. Call Database.initialize() first.');
+    }
+    return this.orm.em.fork();
+  }
+}
+
+export default Database;

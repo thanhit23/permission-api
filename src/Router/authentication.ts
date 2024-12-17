@@ -1,7 +1,7 @@
 import express from 'express';
-import AuthenticationController from '@/Controller/V1/authentication';
+import AuthenticationController from '@/controller/V1/authentication';
 import validate from '@/middlewares/validate';
-import AuthenticationValidation from '@/Validations/authentication';
+import AuthenticationValidation from '@/validations/authentication';
 import authenticate from '@/middlewares/authenticate';
 import { ROLE } from '@/config/roles';
 
