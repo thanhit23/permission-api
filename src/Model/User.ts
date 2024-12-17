@@ -18,6 +18,12 @@ export type RegisterBody = {
   password: string;
 }
 
+export type Resposive = {
+  statusCode: number;
+  status: boolean;
+  error: string;
+}
+
 export type LoginBody = {
   email: string;
   password: string;
