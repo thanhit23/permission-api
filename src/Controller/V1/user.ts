@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 
-import UserService from '@/Service/user'
+import UserService from '@/service/user'
 
 class UserController {
   static async getUsers(req: Request, res: Response): Promise<void> {

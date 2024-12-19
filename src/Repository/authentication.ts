@@ -1,65 +1,43 @@
-import { QueryError } from 'mysql2';
 import bcrypt from 'bcrypt';
 import httpStatus from 'http-status-codes';
 
-import db from '@/database'
-import { User, RegisterBody, LoginBody } from '@/Model/User'
+import DB from '@/database'
+import { RegisterBody, LoginBody } from '@/model/Users'
+import Users from '@/model/Users'
 
 class UserRepository {
   static async register(body: RegisterBody): Promise<any> {
-    try {
-      return new Promise((resolve, reject) => {
-        const queryCheckEmail = `SELECT * FROM Users WHERE email = ?`;
+    return new Promise(async (resolve, reject) => {
+      const users = await DB.getEntityManager().find(Users, { email: body.email })
+      const password = bcrypt.hashSync(body.password, 10);
 
-        db.query(queryCheckEmail, [body.email], (err, results: any) => {
-          if (err) {
-            return reject({ status: false, statusCode: httpStatus.BAD_REQUEST, error: true });
-          }
+      if (users.length > 1) {
+        return reject({ status: false, statusCode: httpStatus.BAD_REQUEST, error: true, message: 'Email already exists', });
+      }
 
-          if (results.length > 1) {
-            return reject({ status: false, statusCode: httpStatus.BAD_REQUEST, error: true, message: 'Email already exists', });
-          }
-        });
-
-        const password = bcrypt.hashSync(body.password, 10);
-        const queryInsertUser = 'INSERT INTO Users (name, email, password) VALUES (?, ?, ?)';
-
-        db.query(queryInsertUser, [body.name, body.email, password], (err: QueryError | null) => {
-          if (err) {
-            return reject({ status: false, statusCode: httpStatus.BAD_REQUEST, error: true });
-          }
-
-          return resolve({ status: true, statusCode: httpStatus.CREATED, error: false, message: 'Created successfully', data: {} });
-        });
+      await DB.getEntityManager().insert(Users, {
+        name: body.name,
+        email: body.email,
+        password,
       })
-    } catch (error) {
-      console.error('Error fetching users by class:', error);
-      return [];
-    }
+
+      return resolve({ status: true, statusCode: httpStatus.OK, error: false, data: true, message: 'Create Successfully', })
+    })
   }
   static async login(body: LoginBody): Promise<any> {
-    try {
-      return new Promise((resolve, reject) => {
-        db.query('SELECT * FROM Users WHERE email = ? LIMIT 1', [body.email], (err: QueryError | null, results: any) => {
-          if (err) {
-            return reject({ status: false, statusCode: httpStatus.BAD_REQUEST, error: true });
-          }
+    return new Promise(async (resolve, reject) => {
+      const users = await DB.getEntityManager().find(Users, { email: body.email })
 
-          if (results.length === 0) {
-            return reject({ status: false, statusCode: httpStatus.BAD_REQUEST, error: true, message: 'Email already exists', });
-          }
+      if (users.length === 0) {
+        return reject({ status: false, statusCode: httpStatus.BAD_REQUEST, error: true, message: 'Email already exists', });
+      }
 
-          const checkPassword = bcrypt.compareSync(body.password, results[0].password)
+      const checkPassword = bcrypt.compareSync(body.password, users[0].password)
 
-          if (results.length === 1 && checkPassword) {
-            return resolve({ status: true, statusCode: httpStatus.OK, error: false, data: results[0], message: 'Login Successfully', });
-          }
-        });
-      })
-    } catch (error) {
-      console.error('Error fetching users by class:', error);
-      return [];
-    }
+      if (users.length === 1 && checkPassword) {
+        return resolve({ status: true, statusCode: httpStatus.OK, error: false, data: users[0], message: 'Login Successfully', });
+      }
+    })
   }
 }
 

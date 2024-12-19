@@ -1,11 +1,10 @@
 import dayjs from 'dayjs';
 import jwt from 'jsonwebtoken';
-import { Request, Response } from 'express';
 
 import config from '@/config/config';
 import { TokenTypes } from '@/config/tokens';
-import User, { RegisterBody, Resposive } from '@/Model/User';
-import AuthenticationRepository from "@/Repository/authentication";
+import User, { RegisterBody, Resposive } from '@/model/Users';
+import AuthenticationRepository from "@/repository/authentication";
 
 class AuthenticationService {
   static async register(body: RegisterBody): Promise<Resposive> {
@@ -38,20 +37,13 @@ class AuthenticationService {
     };
     return jwt.sign(payload, secret);
   };
-  static async login(req: Request<any, any, RegisterBody>, res: Response): Promise<void> {
-    try {
-      const responsive = await AuthenticationRepository.login(req.body);
+  static async login(body: RegisterBody): Promise<Resposive> {
+    const responsive = await AuthenticationRepository.login(body);
 
-      const token = await this.generateAuthTokens(responsive.data)
-      
-      res.status(responsive?.statusCode).json({ ...responsive, data: token });
-    } catch (err) {
-      const error = { statusCode: 500, ...(err instanceof Object ? err : {}) };
-      res.status(error?.statusCode).json(error);
-      return;
-    }
+    const token = await this.generateAuthTokens(responsive.data);
+
+    return { ...responsive, data: token }
   }
-  
 }
 
 export default AuthenticationService;

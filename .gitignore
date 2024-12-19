@@ -11,6 +11,9 @@
 # dist
 /dist
 
+# temp
+/temp
+
 # next.js
 /.next/
 /out/
