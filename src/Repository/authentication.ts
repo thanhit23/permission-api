@@ -2,8 +2,8 @@ import bcrypt from 'bcrypt';
 import httpStatus from 'http-status-codes';
 
 import DB from '@/database'
-import { RegisterBody, LoginBody } from '@/model/Users'
 import Users from '@/model/Users'
+import { RegisterBody, LoginBody } from '@/model/Users'
 
 class UserRepository {
   static async register(body: RegisterBody): Promise<any> {

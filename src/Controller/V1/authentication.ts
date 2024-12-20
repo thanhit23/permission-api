@@ -2,32 +2,29 @@ import { Request, Response } from 'express';
 import { omit } from 'lodash';
 
 import AuthenticationService from '@/service/authentication'
+import catchAsync from '@/utils/catchAsync';
 
 class AuthenticationController {
   static async register(req: Request, res: Response): Promise<void> {
-    try {
-      const responsive = await AuthenticationService.register(req.body);
-      res.status(responsive?.statusCode).json(responsive);
-    } catch (err) {
-      const error = { statusCode: 500, ...(err instanceof Object ? err : {}) };
-      res.status(error?.statusCode).json(error);
-      return;
-    }
+    catchAsync(res, async () => await AuthenticationService.register(req.body))
   }
   static async login(req: Request, res: Response): Promise<void> {
-    try {
-      const responsive = await AuthenticationService.login(req.body);
-      res.status(responsive?.statusCode).json(responsive);
-    } catch (err) {
-      const error = { statusCode: 500, ...(err instanceof Object ? err : {}) };
-      res.status(error?.statusCode).json(error);
-      return;
-    }
+    catchAsync(res, async () => await AuthenticationService.login(req.body))
   }
   static async me(req: Request, res: Response): Promise<void> {
+    if (!req?.user) {
+      res.status(400).json({
+        status: false,
+        error: true,
+        user: null
+      })
+      return;
+    }
+
     res.status(200).json({
       user: omit(req?.user, ['password'])
     })
+    return;
   }
 }
 

@@ -3,10 +3,11 @@ import bodyParser from "body-parser";
 import cors from 'cors';
 import passport from 'passport';
 import helmet from 'helmet';
-import express, { Express, Request, Response } from "express";
+import express, { Express } from "express";
 
 import userRoutes from '@/router/user';
-import authenticationrRoutes from '@/router/authentication';
+import authenticationRoutes from '@/router/authentication';
+import permissionRoutes from '@/router/permission';
 import jwtStrategy from "@/config/passport";
 import { Database } from "./database";
 
@@ -31,18 +32,12 @@ app.use(helmet());
 app.use(cors());
 app.options('*', cors());
 
-app.use('/v1', userRoutes);
-app.use('/v1/auth', authenticationrRoutes);
+app.use('/v1/users', userRoutes);
+app.use('/v1/auth', authenticationRoutes);
+app.use('/v1/permission', permissionRoutes);
 
 Database.initialize();
 
-app.use((err: { status?: number; message: string}, _: Request, res: Response) => {
-  res.status(err.status || 500).json({
-    error: {
-      message: err.message || 'Internal Server Error',
-    },
-  });
-});
 
 app.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);
