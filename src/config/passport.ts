@@ -15,13 +15,13 @@ const jwtVerify: VerifyCallback = async (payload, done) => {
       throw new Error('Invalid token type');
     }
 
-    const users = await DB.getEntityManager().find(Users, { id: payload.sub })
+    const users = await DB.getEntityManager().findOne(Users, { id: payload.sub })
 
-    if (users.length === 0) {
+    if (!users) {
       done(null, false);
     }
 
-    done(null, users[0]);
+    done(null, users);
   } catch (error) {
     done(error, false);
   }

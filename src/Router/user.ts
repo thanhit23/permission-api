@@ -5,6 +5,6 @@ import UserValidation from '@/validations/user';
 
 const router = express.Router();
 
-router.get('/users', validate(UserValidation.getUsers), UserController.getUsers);
+router.get('/', validate(UserValidation.getUsers), UserController.getUsers);
 
 export default router;
