@@ -13,4 +13,10 @@ class RolePermissions {
   permission_id!: number;
 }
 
+export type BodyUpdate = {
+  id?: number;
+  role_id: number;
+  permission_id: number;
+}
+
 export default RolePermissions;
