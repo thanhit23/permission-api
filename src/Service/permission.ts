@@ -1,7 +1,7 @@
-import PermissionRepository from "@/repository/permission";
 import { BodyUpdate } from "@/model/Permissions";
+import PermissionRepository from "@/repository/permission";
 
-class UserService {
+class PermissionService {
   static async getPermissions(): Promise<any> {
     return await PermissionRepository.getPermissions();
   }
@@ -16,4 +16,4 @@ class UserService {
   }
 }
 
-export default UserService;
+export default PermissionService;

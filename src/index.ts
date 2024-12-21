@@ -6,9 +6,11 @@ import helmet from 'helmet';
 import express, { Express } from "express";
 
 import userRoutes from '@/router/user';
-import authenticationRoutes from '@/router/authentication';
-import permissionRoutes from '@/router/permission';
 import jwtStrategy from "@/config/passport";
+import permissionRoutes from '@/router/permission';
+import rolePermissionRoutes from '@/router/rolePermission';
+import authenticationRoutes from '@/router/authentication';
+
 import { Database } from "./database";
 
 dotenv.config();
@@ -35,6 +37,7 @@ app.options('*', cors());
 app.use('/v1/users', userRoutes);
 app.use('/v1/auth', authenticationRoutes);
 app.use('/v1/permission', permissionRoutes);
+app.use('/v1/role-permission', rolePermissionRoutes);
 
 Database.initialize();
 

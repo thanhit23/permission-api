@@ -4,7 +4,7 @@ import DB from '@/database'
 import Permissions, { BodyUpdate } from '@/model/Permissions'
 import { ResponseDefault } from '@/interfaces/response'
 
-class UserRepository {
+class PermissionRepository {
   static async getPermissions(): Promise<ResponseDefault<Permissions[]>> {
     const permissions = await DB.getEntityManager().find(Permissions, {});
     return { status: true, statusCode: httpStatus.OK, data: permissions, error: true, message: '' };
@@ -53,4 +53,4 @@ class UserRepository {
   }
 }
 
-export default UserRepository;
+export default PermissionRepository;
