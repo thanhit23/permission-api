@@ -8,6 +8,13 @@ const getUsers = {
   }),
 };
 
+const deleteUser = {
+  params: Joi.object().keys({
+    id: Joi.string(),
+  }),
+};
+
 export default {
   getUsers,
+  deleteUser,
 }

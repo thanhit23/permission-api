@@ -1,23 +1,24 @@
-import { Request, Response, NextFunction } from 'express';
 import passport from 'passport';
+import { lowerCase } from 'lodash';
 import httpStatus from 'http-status-codes';
+import { Request, Response, NextFunction } from 'express';
 
-import ApiError from '@/utils/ApiError';
 import User from '@/model/Users';
+import Roles from '@/model/Roles';
 
-const verifyCallback = (req: Request, resolve: (value?: unknown) => void, reject: (reason?: any) => void, role: string) => async (err: any, user: User | undefined, info: any) => {
+const verifyCallback = (req: Request, res: Response, resolve: (value?: unknown) => void, reject: (reason?: any) => void, role: string) => async (err: any, user: User & { role: Roles } | undefined, info: any) => {
   if (err || info || !user) {
-    return reject(new ApiError(httpStatus.UNAUTHORIZED, 'Please authenticate'));
+    res.status(httpStatus.UNAUTHORIZED).json({ status: true, data: null, error: true, message: 'Please authenticate' });
+    return reject();
   }
   req.user = user;
 
-  console.log(role);
-
-  // if (role.length) {
-  //   if (user.role !== role) {
-  //     return reject(new ApiError(httpStatus.FORBIDDEN, 'Forbidden'));
-  //   }
-  // }
+  if (user && user?.role) {
+    if (lowerCase(user.role.name) !== lowerCase(role)) {
+      res.status(httpStatus.FORBIDDEN).json({ status: true, data: null, error: true, message: 'Forbidden' });
+      return reject();
+    }
+  }
 
   resolve();
 };
@@ -26,7 +27,7 @@ const authenticate =
   (role = 'user') =>
   async (req: Request, res: Response, next: NextFunction) => {
     return new Promise((resolve, reject) => {
-      passport.authenticate('jwt', { session: false }, verifyCallback(req, resolve, reject, role))(req, res, next);
+      passport.authenticate('jwt', { session: false }, verifyCallback(req, res, resolve, reject, role))(req, res, next);
     })
       .then(() => next())
       .catch((err) => next(err));

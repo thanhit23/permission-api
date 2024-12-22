@@ -6,6 +6,7 @@ import helmet from 'helmet';
 import express, { Express } from "express";
 
 import userRoutes from '@/router/user';
+import roleRoutes from '@/router/role';
 import jwtStrategy from "@/config/passport";
 import permissionRoutes from '@/router/permission';
 import rolePermissionRoutes from '@/router/rolePermission';
@@ -34,6 +35,7 @@ app.use(helmet());
 app.use(cors());
 app.options('*', cors());
 
+app.use('/v1/role', roleRoutes);
 app.use('/v1/users', userRoutes);
 app.use('/v1/auth', authenticationRoutes);
 app.use('/v1/permission', permissionRoutes);
