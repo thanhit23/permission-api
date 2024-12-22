@@ -11,10 +11,10 @@ const validate = (schema: Schema | ObjectPropertiesSchema) => (req: Request, res
     .validate(object);
 
   if (error) {
-    const errorMessage = error.details.map((details) => details.message).join(', ');
     res.status(httpStatus.BAD_REQUEST).json({
       status: false,
-      message: errorMessage
+      message: 'Error validate',
+      errors: error.details.map((details) => ({ key: details?.context?.key, message: details.message }))
     })
     return next();
   }

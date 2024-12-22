@@ -9,8 +9,8 @@ const getRolePermissions = {
 
 const createRolePermission = {
   body: Joi.object().keys({
-    role_id: Joi.number(),
-    permission_id: Joi.number(),
+    role_id: Joi.number().required(),
+    permission_id: Joi.number().required(),
   }),
 };
 

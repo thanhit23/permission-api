@@ -1,8 +1,10 @@
 import { Strategy as JwtStrategy, ExtractJwt, VerifyCallback } from 'passport-jwt';
 
 import DB from '@/database';
-import { TokenTypes } from './tokens';
 import Users from '@/model/Users';
+import Roles from '@/model/Roles';
+
+import { TokenTypes } from './tokens';
 
 const jwtOptions = {
   secretOrKey: 'SECRET',
@@ -15,13 +17,15 @@ const jwtVerify: VerifyCallback = async (payload, done) => {
       throw new Error('Invalid token type');
     }
 
-    const users = await DB.getEntityManager().findOne(Users, { id: payload.sub })
+    const user = await DB.getEntityManager().findOne(Users, { id: payload.sub })
 
-    if (!users) {
+    if (!user) {
       done(null, false);
     }
 
-    done(null, users);
+    const role = await DB.getEntityManager().findOne(Roles, { user_id: user?.id })
+
+    done(null, { ...user, role });
   } catch (error) {
     done(error, false);
   }

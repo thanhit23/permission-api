@@ -16,4 +16,12 @@ class Roles {
   description = '';
 }
 
+export type BodyUpdate = {
+  id?: number;
+  user_id: number;
+  name: string;
+  description?: string;
+}
+
+
 export default Roles;
