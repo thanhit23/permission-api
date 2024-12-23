@@ -1,18 +1,21 @@
-import dotenv from "dotenv";
-import bodyParser from "body-parser";
 import cors from 'cors';
-import passport from 'passport';
+import dotenv from "dotenv";
 import helmet from 'helmet';
-import express, { Express } from "express";
+import passport from 'passport';
+import bodyParser from "body-parser";
+import httpStatus from 'http-status-codes';
+import express, { Express, NextFunction } from "express";
 
-import userRoutes from '@/router/user';
-import roleRoutes from '@/router/role';
-import jwtStrategy from "@/config/passport";
-import permissionRoutes from '@/router/permission';
-import rolePermissionRoutes from '@/router/rolePermission';
-import authenticationRoutes from '@/router/authentication';
+import userRoutes from './router/user';
+import roleRoutes from './router/role';
+import jwtStrategy from './config/passport';
+import permissionRoutes from './router/permission';
+import rolePermissionRoutes from './router/rolePermission';
+import authenticationRoutes from './router/authentication';
 
 import { Database } from "./database";
+import ApiError from "./utils/ApiError";
+import { errorConverter, errorHandler } from "./middlewares/error";
 
 dotenv.config();
 
@@ -43,6 +46,13 @@ app.use('/v1/role-permission', rolePermissionRoutes);
 
 Database.initialize();
 
+
+app.use((_, __, next: NextFunction) => {
+  next(new ApiError(httpStatus.NOT_FOUND, 'Not found'));
+});
+
+app.use(errorConverter);
+app.use(errorHandler);
 
 app.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);

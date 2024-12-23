@@ -3,11 +3,11 @@ import jwt from 'jsonwebtoken';
 
 import config from '@/config/config';
 import { TokenTypes } from '@/config/tokens';
-import User, { RegisterBody, Resposive } from '@/model/Users';
+import User, { RegisterBody } from '@/model/Users';
 import AuthenticationRepository from "@/repository/authentication";
 
 class AuthenticationService {
-  static async register(body: RegisterBody): Promise<Resposive> {
+  static async register(body: RegisterBody) {
     return await AuthenticationRepository.register(body);
   }
   static async generateAuthTokens(user: User) {
@@ -37,7 +37,7 @@ class AuthenticationService {
     };
     return jwt.sign(payload, secret);
   };
-  static async login(body: RegisterBody): Promise<Resposive> {
+  static async login(body: RegisterBody) {
     const responsive = await AuthenticationRepository.login(body);
 
     const token = await this.generateAuthTokens(responsive.data);

@@ -1,15 +1,18 @@
-import { Request, Response } from 'express';
+import httpStatus from 'http-status-codes';
 
 import UserService from '@/service/user'
 import catchAsync from '@/utils/catchAsync';
 
 class UserController {
-  static async getUsers(_: Request, res: Response): Promise<void> {
-    catchAsync(res, async () => await UserService.getUsers())
-  }
-  static async deleteUser(req: Request, res: Response): Promise<void> {
-    catchAsync(res, async () => await UserService.deteteUser(Number(req.params.id)))
-  }
+  static getUsers = catchAsync(async (_, res) => {
+    const data = await UserService.getUsers()
+    res.status(httpStatus.CREATED).json(data)
+  });
+
+  static deleteUser = catchAsync(async (req, res) => {
+    const data = await UserService.deteteUser(Number(req.params.id))
+    res.status(httpStatus.CREATED).json(data)
+  });
 }
 
 export default UserController;

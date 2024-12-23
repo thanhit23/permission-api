@@ -1,21 +1,25 @@
-import { Request, Response } from 'express';
+import httpStatus from 'http-status-codes';
 
 import catchAsync from '@/utils/catchAsync';
-import PermissionService from '@/service/permission'
+import PermissionService from '@/service/permission';
 
 class PermissionController {
-  static async getPermissions(_: Request, res: Response): Promise<void> {
-    catchAsync(res, async () => await PermissionService.getPermissions())
-  }
-  static async createPermission(req: Request, res: Response): Promise<void> {
-    catchAsync(res, async () => await PermissionService.createPermission(req.body.name))
-  }
-  static async updatePermission(req: Request, res: Response): Promise<void> {
-    catchAsync(res, async () => await PermissionService.updatePermission({ ...req.body, ...req.params }))
-  }
-  static async deletePermission(req: Request, res: Response): Promise<void> {
-    catchAsync(res, async () => await PermissionService.deletePermission(Number(req.params.id)))
-  }
+  static getPermissions = catchAsync(async (_, res) => {
+    const data = await PermissionService.getPermissions()
+    res.status(httpStatus.OK).json(data)
+  });
+  static createPermission = catchAsync(async (req, res) => {
+    const data = await PermissionService.createPermission(req.body.name)
+    res.status(httpStatus.CREATED).json(data)
+  });
+  static updatePermission = catchAsync(async (req, res) => {
+    const data = await PermissionService.updatePermission({ ...req.body, ...req.params })
+    res.status(httpStatus.OK).json(data)
+  });
+  static deletePermission = catchAsync(async (req, res) => {
+    const data = await PermissionService.deletePermission(Number(req.params.id))
+    res.status(httpStatus.OK).json(data)
+  });
 }
 
 export default PermissionController;
