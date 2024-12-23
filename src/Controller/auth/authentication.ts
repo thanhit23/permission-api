@@ -1,27 +1,26 @@
-import { Request, Response } from 'express';
 import { omit } from 'lodash';
+import httpStatus from 'http-status-codes';
+import { Request, Response } from 'express';
 
 import AuthenticationService from '@/service/authentication'
 import catchAsync from '@/utils/catchAsync';
+import ApiError from '@/utils/ApiError';
 
 class AuthenticationController {
-  static async register(req: Request, res: Response): Promise<void> {
-    catchAsync(res, async () => await AuthenticationService.register(req.body))
-  }
-  static async login(req: Request, res: Response): Promise<void> {
-    catchAsync(res, async () => await AuthenticationService.login(req.body))
-  }
+  static register = catchAsync(async (req, res) => {
+    const data = await AuthenticationService.register(req.body)
+    res.status(httpStatus.OK).json(data)
+  });
+  static login = catchAsync(async (req, res) => {
+    const data = await AuthenticationService.login(req.body)
+    res.status(httpStatus.OK).json(data)
+  })
   static async me(req: Request, res: Response): Promise<void> {
     if (!req?.user) {
-      res.status(400).json({
-        status: false,
-        error: true,
-        user: null
-      })
-      return;
+      throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
     }
 
-    res.status(200).json({
+    res.status(httpStatus.OK).json({
       user: omit(req?.user, ['password'])
     })
     return;

@@ -1,21 +1,28 @@
-import { Request, Response } from 'express';
+import httpStatus from 'http-status-codes';
 
 import RoleService from '@/service/role'
 import catchAsync from '@/utils/catchAsync';
 
 class RoleController {
-  static async getRoles(_: Request, res: Response): Promise<void> {
-    catchAsync(res, async () => await RoleService.getRoles())
-  }
-  static async createRole(req: Request, res: Response): Promise<void> {
-    catchAsync(res, async () => await RoleService.createRole(req.body))
-  }
-  static async updateRole(req: Request, res: Response): Promise<void> {
-    catchAsync(res, async () => await RoleService.updateRole({ ...req.body, ...req.params }))
-  }
-  static async deleteRole(req: Request, res: Response): Promise<void> {
-    catchAsync(res, async () => await RoleService.deleteRole(Number(req.params.id)))
-  }
+  static getRoles = catchAsync(async (_, res) => {
+    const data = await RoleService.getRoles()
+    res.status(httpStatus.CREATED).json(data)
+  });
+
+  static createRole = catchAsync(async (req, res) => {
+    const data = await RoleService.createRole(req.body)
+    res.status(httpStatus.CREATED).json(data)
+  });
+
+  static updateRole = catchAsync(async (req, res) => {
+    const data = await RoleService.updateRole({ ...req.body, ...req.params })
+    res.status(httpStatus.CREATED).json(data)
+  });
+
+  static deleteRole = catchAsync(async (req, res) => {
+    const data = await RoleService.deleteRole(Number(req.params.id))
+    res.status(httpStatus.CREATED).json(data)
+  });
 }
 
 export default RoleController;
