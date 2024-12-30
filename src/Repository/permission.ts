@@ -8,7 +8,6 @@ import ApiError from '@/utils/ApiError';
 class PermissionRepository {
   static async getPermissions(): Promise<ResponseDefault<Permissions[]>> {
     const permissions = await DB.getEntityManager().find(Permissions, {}, { limit: 20 });
-    console.log('permissions', permissions);
     
     return { status: true, data: permissions, error: true, message: '' };
   }

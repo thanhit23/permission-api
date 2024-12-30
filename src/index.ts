@@ -8,13 +8,14 @@ import express, { Express, NextFunction } from "express";
 
 import userRoutes from './router/user';
 import roleRoutes from './router/role';
-import jwtStrategy from './config/passport';
+import storeRoutes from './router/store';
 import permissionRoutes from './router/permission';
 import rolePermissionRoutes from './router/rolePermission';
 import authenticationRoutes from './router/authentication';
 
 import { Database } from "./database";
 import ApiError from "./utils/ApiError";
+import jwtStrategy from './config/passport';
 import { errorConverter, errorHandler } from "./middlewares/error";
 
 dotenv.config();
@@ -40,6 +41,7 @@ app.options('*', cors());
 
 app.use('/v1/role', roleRoutes);
 app.use('/v1/users', userRoutes);
+app.use('/v1/store', storeRoutes);
 app.use('/v1/auth', authenticationRoutes);
 app.use('/v1/permission', permissionRoutes);
 app.use('/v1/role-permission', rolePermissionRoutes);
