@@ -1,0 +1,35 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    depends_on:
+      - mysql
+    networks:
+      - node-network
+  mysql:
+    image: mysql:latest
+    container_name: mysql-local
+    environment:
+      MYSQL_DATABASE: RBAC
+      MYSQL_PASSWORD: "123456"
+      MYSQL_ROOT_PASSWORD: "123456"
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - node-network
+
+volumes:
+  mysql_data:
+
+networks:
+  node-network:
+    driver: bridge
