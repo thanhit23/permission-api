@@ -4,12 +4,13 @@ import { TsMorphMetadataProvider } from '@mikro-orm/reflection';
 const config: Options = {
   driver: MySqlDriver,
   dbName: 'RBAC',
-  host: '127.0.0.1',
+  host: 'mysql',
   user: 'root',
-  password: '',
+  password: '123456',
   entities: ['./src/model'],
   metadataProvider: TsMorphMetadataProvider,
   debug: true,
 };
+
 
 export default config;
