@@ -7,7 +7,18 @@ CREATE TABLE IF NOT EXISTS Users (
   PRIMARY KEY(id)
 );
 
-CREATE TABLE IF NOT EXISTS Role_Permissions (
+CREATE TABLE IF NOT EXISTS UserRoles (
+  id INT NOT NULL AUTO_INCREMENT,
+  role_id INT NOT NULL,
+  user_id INT NOT NULL,
+  store_id INT,
+  FOREIGN KEY (role_id) REFERENCES Roles(id),
+  FOREIGN KEY (user_id) REFERENCES Users(id),
+  FOREIGN KEY (store_id) REFERENCES Stores(id),
+  PRIMARY KEY(id)
+);
+
+CREATE TABLE IF NOT EXISTS RolePermissions (
   id INT NOT NULL AUTO_INCREMENT,
   role_id INT NOT NULL,
   permission_id INT NOT NULL,
@@ -24,11 +35,9 @@ CREATE TABLE IF NOT EXISTS Permissions (
 
 CREATE TABLE IF NOT EXISTS Roles (
   id INT NOT NULL AUTO_INCREMENT,
-  user_id INT NOT NULL,
   name char(100) NOT NULL,
   description char(100),
   PRIMARY KEY(id),
-  FOREIGN KEY (user_id) REFERENCES Users(id)
 );
 
 CREATE TABLE IF NOT EXISTS Stores (

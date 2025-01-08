@@ -3,8 +3,11 @@ import httpStatus from 'http-status-codes';
 
 import DB from '@/database'
 import Users from '@/model/Users'
+import UserRole from '@/model/UserRoles'
 import ApiError from '@/utils/ApiError';
 import { RegisterBody, LoginBody } from '@/model/Users'
+
+import RoleRepository from './role';
 
 class UserRepository {
   static async register(body: RegisterBody) {
@@ -15,11 +18,18 @@ class UserRepository {
       throw new ApiError(httpStatus.BAD_REQUEST, 'Email already exists');
     }
 
-    await DB.getEntityManager().insert(Users, {
+    const userId = await DB.getEntityManager().insert(Users, {
       name: body.name,
       email: body.email,
       password,
     })
+
+    const role = await RoleRepository.getRoleById(body?.roleId);
+
+    await DB.getEntityManager().insert(UserRole, {
+      role_id: role.id,
+      user_id: userId,
+    });
 
     return { status: true, error: false, data: true, message: 'Create Successfully' }
   }

@@ -2,7 +2,7 @@ import { Strategy as JwtStrategy, ExtractJwt, VerifyCallback } from 'passport-jw
 
 import DB from '@/database';
 import Users from '@/model/Users';
-import Roles from '@/model/Roles';
+import UserRoles from '@/model/UserRoles';
 
 import { TokenTypes } from './tokens';
 
@@ -23,7 +23,7 @@ const jwtVerify: VerifyCallback = async (payload, done) => {
       done(null, false);
     }
 
-    const role = await DB.getEntityManager().findOne(Roles, { user_id: user?.id })
+    const role = await DB.getEntityManager().findOne(UserRoles, { user_id: user?.id })
 
     done(null, { ...user, role });
   } catch (error) {
