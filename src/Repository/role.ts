@@ -11,6 +11,16 @@ class RoleRepository {
     const permissions = await DB.getEntityManager().find(Roles, {}, { limit: 20 });
     return { status: true, statusCode: httpStatus.OK, data: permissions, error: true, message: '' };
   }
+  static async validateRole(id: number): Promise<void> {
+    const user = await DB.getEntityManager().findOne(Roles, { id });
+
+    if (!user) {
+      throw new ApiError(httpStatus.BAD_REQUEST, 'Role not found.');
+    }
+  }
+  static async getRoleById(id: number): Promise<any> {
+    return await DB.getEntityManager().findOne(Roles, { id });
+  }
   static async createRole(body: BodyUpdate): Promise<ResponseDefault> {  
     await DB.getEntityManager().insert(Roles, body);
 

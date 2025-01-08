@@ -10,7 +10,6 @@ const getRoles = {
 
 const createRole = {
   body: Joi.object().keys({
-    user_id: Joi.number().required(),
     name: Joi.string().required(),
     description: Joi.string(),
   }),
@@ -18,7 +17,6 @@ const createRole = {
 
 const updateRole = {
   body: Joi.object().keys({
-    user_id: Joi.string(),
     name: Joi.string(),
     description: Joi.string(),
   }),

@@ -16,6 +16,13 @@ class StoreRepository {
 
     return { status: true, error: false, data: null, message: 'Create Successfully' };
   }
+  static async validateStore(id: number): Promise<void> {
+    const user = await DB.getEntityManager().findOne(Stores, { id });
+
+    if (!user) {
+      throw new ApiError(httpStatus.BAD_REQUEST, 'Store not found.');
+    }
+  }
   static async updateStore(body: Required<BodyUpdate>): Promise<ResponseDefault> {
     const em = DB.getEntityManager().fork();
     const store = await em.findOne(Stores, { id: body.id });

@@ -1,6 +1,6 @@
 import { Entity, PrimaryKey, Property } from '@mikro-orm/core';
 
-@Entity()
+@Entity({ tableName: 'Users' })
 class Users {
 
   @PrimaryKey()
@@ -19,6 +19,7 @@ class Users {
 export type RegisterBody = {
   name: string;
   email: string;
+  roleId: number;
   password: string;
 }
 
